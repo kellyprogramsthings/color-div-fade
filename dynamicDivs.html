@@ -1,0 +1,61 @@
+<html>
+<head>
+	<title>Dynamic Divs</title>
+
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+	<script>
+		var rgb = "rgb(00, 00, 00)";
+		var createDiv = function(i, color) {
+			//alert (color);
+
+			if (color == 'black') {
+				rgb = "rgb(" + (255 - i) + ", " + (255 - i) + ", " + (255 - i) + ")";
+			}
+
+			if (color == 'red') {
+				rgb = "rgb(" + 255 + ", " + (255 - i) + ", " + (255 - i) + ")";
+			}
+
+			if (color == 'green') {
+				rgb = "rgb(" + (255 - i) + ", " + 255 + ", " + (255 - i) + ")";
+			}
+
+			if (color == 'blue') {
+				rgb = "rgb(" + (255 - i) + ", " + (255 - i) + ", " + 255 + ")";
+			}
+
+			$('div#container').append("<div id='div" + i + "'></div>");
+			$('#div' + i).css("background-color", rgb);
+		} 
+
+		$(document).ready(function() {
+			$('select#dropDown').on('change', function() {
+				//alert($('select#dropDown').attr('value'));
+				$('div#container').empty();
+				for (var i = 0; i < 256; i++) {
+					setTimeout(function(i) {
+					createDiv(i, $('select#dropDown').val())}, 10 * i, i);
+				}
+			});
+		});
+
+
+
+	</script>
+	<style>
+		div {height:2px;}
+	</style>
+</head>
+
+<body>
+	<label for="dropDown">Choose a color:</label>
+	<select id="dropDown" name="dropDown">
+ 		<option value="black">Black</option>
+ 		<option value="red">Red</option>
+  		<option value="green">Green</option>
+  		<option value="blue">Blue</option>
+	</select>
+	<div id="container">
+	</div>
+</body>
+</html>
