@@ -4,57 +4,39 @@
 
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 	<script>
-		var rgb = "rgb(00, 00, 00)";
+		var hsl = "hsl(255, 100%, 100%)"
 		var createDiv = function(i, color) {
-			//alert (color);
+			color = 360 - (360 * (color/980)); //image is backwards from the way it expects
 
-			if (color == 'black') {
-				rgb = "rgb(" + (255 - i) + ", " + (255 - i) + ", " + (255 - i) + ")";
-			}
-
-			if (color == 'red') {
-				rgb = "rgb(" + 255 + ", " + (255 - i) + ", " + (255 - i) + ")";
-			}
-
-			if (color == 'green') {
-				rgb = "rgb(" + (255 - i) + ", " + 255 + ", " + (255 - i) + ")";
-			}
-
-			if (color == 'blue') {
-				rgb = "rgb(" + (255 - i) + ", " + (255 - i) + ", " + 255 + ")";
-			}
+			hsl = "hsl(" + color + ", 50%, " + (100 - ((i/2)/255) * 100) + "%)"; //set it to only go down to 50%
 
 			$('div#container').append("<div id='div" + i + "'></div>");
-			$('#div' + i).css("background-color", rgb);
+			$('#div' + i).css("background-color", hsl);
 		} 
 
 		$(document).ready(function() {
-			$('select#dropDown').on('change', function() {
-				//alert($('select#dropDown').attr('value'));
+			$('img#colorPicker').click(function(e) {
+				var mousePositionX = e.pageX - $('#colorPicker').offset().left;
+							
 				$('div#container').empty();
 				for (var i = 0; i < 256; i++) {
 					setTimeout(function(i) {
-					createDiv(i, $('select#dropDown').val())}, 10 * i, i);
+					createDiv(i, mousePositionX)}, 10 * i, i);
 				}
 			});
 		});
-
-
-
 	</script>
+
 	<style>
 		div {height:2px;}
+		img {width:980px; height:10px;}
 	</style>
 </head>
 
 <body>
-	<label for="dropDown">Choose a color:</label>
-	<select id="dropDown" name="dropDown">
- 		<option value="black">Black</option>
- 		<option value="red">Red</option>
-  		<option value="green">Green</option>
-  		<option value="blue">Blue</option>
-	</select>
+	Choose a color:
+	<br><img id="colorPicker" src="colorfade.jpg">
+
 	<div id="container">
 	</div>
 </body>
