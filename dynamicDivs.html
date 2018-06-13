@@ -5,14 +5,57 @@
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 	<script>
 		var hsl = "hsl(255, 100%, 100%)"
-		var createDiv = function(i, color) {
-			color = 360 - (360 * (color/980)); //image is backwards from the way it expects
+		var animation = true;
+		var iteration = 0;
 
-			hsl = "hsl(" + color + ", 50%, " + (100 - ((i/2)/255) * 100) + "%)"; //set it to only go down to 50%
+		var createDiv = function(i, color) {
+			//alert(color);
+
+			if (color < 0) {
+				hsl = "hsl(" + ((i/256) * 360) + ", 50%, 50%)";
+				//alert(hsl);
+			}
+			else {
+				color = 360 - (360 * (color/980)); //image is backwards from the way it expects
+
+				hsl = "hsl(" + color + ", 50%, " + (100 - ((i/2)/255) * 100) + "%)"; //set it to only go down to 50%
+			}
 
 			$('div#container').append("<div id='div" + i + "'></div>");
 			$('#div' + i).css("background-color", hsl);
-		} 
+		}
+
+		var createMovingDiv = function(i, color) {
+			if (color < 0) {
+				hsl = "hsl(" + (((i/256) * 360) % 360) + ", 50%, 50%)";
+			}
+			if (i >= 256) { 
+				i = i % 256;
+				$('div#container').find('div').first().remove();
+			}
+			$('div#container').append("<div id='div" + i + "'></div>");
+			$('#div' + i).css("background-color", hsl);
+		}
+
+		var createMovingDivInfinite = function(i, color, continueAnimation) {
+			hsl = "hsl(" + (((i/256) * 360) % 360) + ", 50%, 50%)";
+			var temp = i;
+
+			if (temp >= 256) { 
+				temp = temp % 256;
+				$('div#container').find('div').first().remove();
+			}
+			
+			$('div#container').append("<div id='div" + temp + "'></div>");
+			$('#div' + temp).css("background-color", hsl);
+			if (continueAnimation == true) {
+				i++;
+				iteration = i;
+				setTimeout(function(iteration) {
+					createMovingDivInfinite(iteration, -1, animation)
+				}, 10, iteration);
+			}
+		}
 
 		$(document).ready(function() {
 			$('img#colorPicker').click(function(e) {
@@ -22,6 +65,37 @@
 				for (var i = 0; i < 256; i++) {
 					setTimeout(function(i) {
 					createDiv(i, mousePositionX)}, 10 * i, i);
+				}
+			});
+
+			$('input#rainbow').click(function() {
+				$('div#container').empty();
+				for (var i = 0; i < 256; i++) {
+					setTimeout(function(i) {
+					createDiv(i, -1)}, 10 * i, i);
+				}
+			});
+
+			$('input#movingRainbow').click(function() {
+				$('input#stopStart').show();
+				$('div#container').empty();
+				// var numberOfTimesToRun = 2;
+				// for (var i = 0; i < (256 * numberOfTimesToRun) && animation == true; i++) {
+				// 	//animation == true
+				// 	//(256 * numberOfTimesToRun)
+				// 	setTimeout(function(i) {
+				// 	createMovingDiv(i, -1)}, 10 * i, i);
+				// }
+				createMovingDivInfinite(iteration, -1, animation)
+			});
+
+			$('input#stopStart').click(function() {
+				if (animation == true) {
+					animation = false;
+				}
+				else {
+					animation = true;
+					createMovingDivInfinite(iteration, -1, animation);
 				}
 			});
 		});
@@ -36,6 +110,9 @@
 <body>
 	Choose a color:
 	<br><img id="colorPicker" src="colorfade.jpg">
+	<br><input type="button" id="rainbow" value="Rainbow">
+	<input type="button" id="movingRainbow" value="Moving Rainbow">
+	<input style="display: none;" type="button" id="stopStart" value="Start/Stop Animation">
 
 	<div id="container">
 	</div>
