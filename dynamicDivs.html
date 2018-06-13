@@ -9,16 +9,13 @@
 		var iteration = 0;
 
 		var createDiv = function(i, color) {
-			//alert(color);
-
 			if (color < 0) {
 				hsl = "hsl(" + ((i/256) * 360) + ", 50%, 50%)";
-				//alert(hsl);
 			}
+
 			else {
 				color = 360 - (360 * (color/980)); //image is backwards from the way it expects
-
-				hsl = "hsl(" + color + ", 50%, " + (100 - ((i/2)/255) * 100) + "%)"; //set it to only go down to 50%
+				hsl = "hsl(" + color + ", 50%, " + (100 - ((i/2)/255) * 100) + "%)";
 			}
 
 			$('div#container').append("<div id='div" + i + "'></div>");
@@ -29,10 +26,12 @@
 			if (color < 0) {
 				hsl = "hsl(" + (((i/256) * 360) % 360) + ", 50%, 50%)";
 			}
+
 			if (i >= 256) { 
 				i = i % 256;
 				$('div#container').find('div').first().remove();
 			}
+
 			$('div#container').append("<div id='div" + i + "'></div>");
 			$('#div' + i).css("background-color", hsl);
 		}
@@ -48,6 +47,7 @@
 			
 			$('div#container').append("<div id='div" + temp + "'></div>");
 			$('#div' + temp).css("background-color", hsl);
+
 			if (continueAnimation == true) {
 				i++;
 				iteration = i;
@@ -95,6 +95,7 @@
 				}
 				else {
 					animation = true;
+					iteration++;
 					createMovingDivInfinite(iteration, -1, animation);
 				}
 			});
